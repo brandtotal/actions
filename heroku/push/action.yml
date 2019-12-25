@@ -1,0 +1,13 @@
+name: "Heroku Push"
+description: "Heroku push"
+author: "Ben Grynhaus <ben@brandtotal.com>"
+inputs:
+  appName:
+    description: "the name of the app"
+    required: true
+  apiKey:
+    description: "the api key from heroku, you can generate it using `heroku authorizations:create -d='Some description for the token'"
+    required: true
+runs:
+  using: "node12"
+  main: "dist/index.js"
