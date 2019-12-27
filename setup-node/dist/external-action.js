@@ -11,7 +11,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = require("@actions/core");
 const exec = require("@actions/exec");
-const io = require("@actions/io");
 const path = require("path");
 const yaml = require("js-yaml");
 // Default error message describing the `action` input parameter format
@@ -116,23 +115,6 @@ function executeAction(actionFileFolder) {
     });
 }
 /**
- * Deletes the folder used for the repository clone
- */
-function deleteFolder(tempFolder) {
-    return __awaiter(this, void 0, void 0, function* () {
-        // Cleanup
-        if (tempFolder) {
-            try {
-                yield io.rmRF(tempFolder);
-            }
-            catch (err) {
-                core.error(err);
-                core.setFailed(`There was an error while trying to delete temp folder '${tempFolder}'`);
-            }
-        }
-    });
-}
-/**
  * Checks out the code from the repository and branch where the action has been called
  */
 function runExternalAction(uses) {
@@ -152,6 +134,7 @@ function runExternalAction(uses) {
         }
         // Create a random folder name where to checkout the action
         const tempFolderName = randomFolderName();
+        registerPathToDelete(tempFolderName);
         try {
             // Generate repository URL for the action to checkout
             const url = `https://github.com/${org}/${repo}.git`;
@@ -167,11 +150,14 @@ function runExternalAction(uses) {
         catch (err) {
             core.setFailed(err);
         }
-        finally {
-            // Cleanup
-            deleteFolder(tempFolderName);
-        }
     });
 }
 exports.runExternalAction = runExternalAction;
+function registerPathToDelete(path) {
+    const existingState = core.getState("pathsToDelete");
+    const pathsToDelete = existingState
+        ? JSON.parse(existingState).concat(path)
+        : [path];
+    core.saveState("pathsToDelete", JSON.stringify(pathsToDelete));
+}
 //# sourceMappingURL=external-action.js.map

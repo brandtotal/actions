@@ -4,3 +4,4 @@ author: "Ben Grynhaus <ben@brandtotal.com>"
 runs:
   using: "node12"
   main: "dist/main.js"
+  post: "dist/cleanup.js"

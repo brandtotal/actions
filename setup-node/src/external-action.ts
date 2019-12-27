@@ -1,6 +1,5 @@
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
-import * as io from "@actions/io";
 import * as path from "path";
 import * as yaml from "js-yaml";
 
@@ -129,23 +128,6 @@ async function executeAction(actionFileFolder: string) {
 }
 
 /**
- * Deletes the folder used for the repository clone
- */
-async function deleteFolder(tempFolder: string) {
-  // Cleanup
-  if (tempFolder) {
-    try {
-      await io.rmRF(tempFolder);
-    } catch (err) {
-      core.error(err);
-      core.setFailed(
-        `There was an error while trying to delete temp folder '${tempFolder}'`
-      );
-    }
-  }
-}
-
-/**
  * Checks out the code from the repository and branch where the action has been called
  */
 export async function runExternalAction(uses: string) {
@@ -169,6 +151,8 @@ export async function runExternalAction(uses: string) {
   // Create a random folder name where to checkout the action
   const tempFolderName = randomFolderName();
 
+  registerPathToDelete(tempFolderName);
+
   try {
     // Generate repository URL for the action to checkout
     const url = `https://github.com/${org}/${repo}.git`;
@@ -186,8 +170,13 @@ export async function runExternalAction(uses: string) {
     await executeAction(actionFileFolder);
   } catch (err) {
     core.setFailed(err);
-  } finally {
-    // Cleanup
-    deleteFolder(tempFolderName);
   }
+}
+
+function registerPathToDelete(path: string) {
+  const existingState = core.getState("pathsToDelete");
+  const pathsToDelete = existingState
+    ? (JSON.parse(existingState) as string[]).concat(path)
+    : [path];
+  core.saveState("pathsToDelete", JSON.stringify(pathsToDelete));
 }
