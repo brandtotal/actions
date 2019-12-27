@@ -1,5 +1,12 @@
 {
-    "cSpell.words": [
-        "brandtotal"
-    ]
+	"cSpell.words": ["brandtotal"],
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"search.exclude": {
+		"**/*.js.map": true,
+		"**/.DS_Store": true,
+		"**/.git": true,
+		"**/.hg": true,
+		"**/.svn": true,
+		"**/dist/**/*.*": true
+	}
 }

@@ -14,10 +14,17 @@
 		"test": "jest",
 		"all": "npm run build && npm run format && npm run lint && npm run pack && npm test"
 	},
-	"dependencies": {
+	"peerDependencies": {
 		"@actions/core": "^1.2.0",
 		"@actions/exec": "^1.0.2",
-		"@actions/io": "^1.0.1",
-		"fs-extra": "^8.1.0"
+		"@actions/io": "^1.0.1"
+	},
+	"dependencies": {
+		"js-yaml": "^3.13.1"
+	},
+	"devDependencies": {
+		"@actions/core": "^1.2.0",
+		"@actions/exec": "^1.0.2",
+		"@actions/io": "^1.0.1"
 	}
 }

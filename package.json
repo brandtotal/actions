@@ -4,7 +4,8 @@
 		"packages": [
 			"actions-lib",
 			"heroku-push",
-			"setup-node"
+			"setup-node",
+			"yarn-install"
 		],
 		"nohoist": [
 			"**/*"
@@ -12,12 +13,8 @@
 	},
 	"scripts": {
 		"build": "yarn wsrun build",
-		"test": "jest"
-	},
-	"husky": {
-		"hooks": {
-			"pre-commit": "yarn build && git add ."
-		}
+		"test": "jest --passWithNoTests",
+		"yarn-deduplicate": "yarn-deduplicate yarn.lock -s fewer && yarn"
 	},
 	"devDependencies": {
 		"@types/fs-extra": "^8.0.1",
@@ -33,9 +30,22 @@
 		"jest": "^24.9.0",
 		"jest-circus": "^24.9.0",
 		"js-yaml": "^3.13.1",
+		"lint-staged": "^9.5.0",
 		"prettier": "^1.19.1",
 		"ts-jest": "^24.2.0",
 		"typescript": "^3.7.4",
-		"wsrun": "^5.2.0"
+		"wsrun": "^5.2.0",
+		"yarn-deduplicate": "^1.1.1"
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "yarn build && lint-staged && git add .",
+			"pre-push": "yarn test"
+		}
+	},
+	"lint-staged": {
+		"*.{ts,js,json,yml,md}": [
+			"prettier --write"
+		]
 	}
 }

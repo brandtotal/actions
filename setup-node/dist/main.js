@@ -10,24 +10,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = require("@actions/core");
+const actions_lib_1 = require("@brandtotal/actions_lib");
 const fs = require("fs-extra");
-const external_action_1 = require("./external-action");
-const set_input_1 = require("./set-input");
 const nv = require("@pkgjs/nv");
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const nvm = (yield fs.readFile(".nvmrc", { encoding: "utf8" })).trim();
-            core.info(`Found \`${nvm}\` in .nvmrc`);
+            core.info(`Found '${nvm}' in .nvmrc`);
             const normalizedNvm = nvm.startsWith("lts") ? nvm.replace("lts/", "") : nvm;
             const versions = yield nv(normalizedNvm);
             core.info(`Matched with concrete version(s) of: ${JSON.stringify(versions, null, 2)}`);
             if (versions.length === 0) {
                 return core.setFailed(`Didn't match any nvm versions`);
             }
-            core.info(`Set \`node-version\` input to \`${versions[0].versionName}\``);
-            set_input_1.setInput("node-version", versions[0].versionName);
-            yield external_action_1.runExternalAction("actions/setup-node@v1");
+            yield actions_lib_1.ExternalAction.runExternalAction("actions/setup-node@v1", {
+                "node-version": versions[0].versionName,
+            });
         }
         catch (error) {
             core.setFailed(error.message);
