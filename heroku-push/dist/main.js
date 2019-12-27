@@ -8,22 +8,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const core_1 = __importDefault(require("@actions/core"));
-const exec_1 = require("@actions/exec");
+const core = require("@actions/core");
+const exec = require("@actions/exec");
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const appName = core_1.default.getInput("appName");
-            const apiKey = core_1.default.getInput("apiKey");
+            const appName = core.getInput("appName");
+            const apiKey = core.getInput("apiKey");
             const remoteUrl = `https://heroku:${apiKey}@git.heroku.com/${appName}.git`;
-            yield exec_1.exec(`git`, [`push`, remoteUrl, `HEAD:master`]);
+            yield exec.exec(`git`, [`push`, remoteUrl, `HEAD:master`]);
         }
         catch (error) {
-            core_1.default.setFailed(error.message);
+            core.setFailed(error.message);
         }
     });
 }

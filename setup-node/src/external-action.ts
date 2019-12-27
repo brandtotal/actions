@@ -1,8 +1,8 @@
-import core from "@actions/core";
-import { exec } from "@actions/exec";
-import io from "@actions/io";
-import path from "path";
-import yaml from "js-yaml";
+import * as core from "@actions/core";
+import * as exec from "@actions/exec";
+import * as io from "@actions/io";
+import * as path from "path";
+import * as yaml from "js-yaml";
 
 // Default error message describing the `action` input parameter format
 const ACTION_ERROR = `Provided 'action' is not valid, it must have the following format: '{org}/{repo}[/path]@ref'`;
@@ -29,7 +29,7 @@ function randomFolderName() {
  */
 async function cloneRepository(tempFolder: string, repositoryUrl: string) {
   try {
-    await exec("git", ["clone", repositoryUrl, tempFolder]);
+    await exec.exec("git", ["clone", repositoryUrl, tempFolder]);
   } catch (err) {
     core.error(err);
     throw new Error(
@@ -43,7 +43,7 @@ async function cloneRepository(tempFolder: string, repositoryUrl: string) {
  */
 async function checkout(tempFolder: string, reference: string) {
   try {
-    await exec("git", ["checkout", "-f", "--detach", reference], {
+    await exec.exec("git", ["checkout", "-f", "--detach", reference], {
       cwd: tempFolder
     });
   } catch (err) {
@@ -72,7 +72,7 @@ async function executeAction(actionFileFolder: string) {
 
   try {
     // Use cat to fetch the content of `action.yml` file
-    await exec("cat", [actionFileFolder + "/action.yml"], options);
+    await exec.exec("cat", [actionFileFolder + "/action.yml"], options);
   } catch (err) {
     core.error(err);
     throw new Error(`There was an error while trying to read 'action.yml'`);
@@ -105,7 +105,7 @@ async function executeAction(actionFileFolder: string) {
     let currentPath = "";
 
     // Get the full path of the current path
-    await exec("pwd", [], {
+    await exec.exec("pwd", [], {
       listeners: {
         stdline: (data: string) => {
           currentPath = data;

@@ -8,15 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const core_1 = __importDefault(require("@actions/core"));
-const exec_1 = require("@actions/exec");
-const io_1 = __importDefault(require("@actions/io"));
-const path_1 = __importDefault(require("path"));
-const js_yaml_1 = __importDefault(require("js-yaml"));
+const core = require("@actions/core");
+const exec = require("@actions/exec");
+const io = require("@actions/io");
+const path = require("path");
+const yaml = require("js-yaml");
 // Default error message describing the `action` input parameter format
 const ACTION_ERROR = `Provided 'action' is not valid, it must have the following format: '{org}/{repo}[/path]@ref'`;
 /**
@@ -33,10 +30,10 @@ function randomFolderName() {
 function cloneRepository(tempFolder, repositoryUrl) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield exec_1.exec("git", ["clone", repositoryUrl, tempFolder]);
+            yield exec.exec("git", ["clone", repositoryUrl, tempFolder]);
         }
         catch (err) {
-            core_1.default.error(err);
+            core.error(err);
             throw new Error("There was an error while trying to clone the action repository");
         }
     });
@@ -47,12 +44,12 @@ function cloneRepository(tempFolder, repositoryUrl) {
 function checkout(tempFolder, reference) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield exec_1.exec("git", ["checkout", "-f", "--detach", reference], {
+            yield exec.exec("git", ["checkout", "-f", "--detach", reference], {
                 cwd: tempFolder
             });
         }
         catch (err) {
-            core_1.default.error(err);
+            core.error(err);
             throw new Error(`There was an error while trying to checkout '${reference}'`);
         }
     });
@@ -74,19 +71,19 @@ function executeAction(actionFileFolder) {
         };
         try {
             // Use cat to fetch the content of `action.yml` file
-            yield exec_1.exec("cat", [actionFileFolder + "/action.yml"], options);
+            yield exec.exec("cat", [actionFileFolder + "/action.yml"], options);
         }
         catch (err) {
-            core_1.default.error(err);
+            core.error(err);
             throw new Error(`There was an error while trying to read 'action.yml'`);
         }
         let actionFileObject;
         try {
             // Convert the YML file into a javascript object
-            actionFileObject = yield js_yaml_1.default.safeLoad(actionFileContent);
+            actionFileObject = yield yaml.safeLoad(actionFileContent);
         }
         catch (err) {
-            core_1.default.error(err);
+            core.error(err);
             throw new Error(`The 'action.yml' file seems to have an invalid format`);
         }
         // Check if the `action.yml` file has properly written
@@ -100,7 +97,7 @@ function executeAction(actionFileFolder) {
         try {
             let currentPath = "";
             // Get the full path of the current path
-            yield exec_1.exec("pwd", [], {
+            yield exec.exec("pwd", [], {
                 listeners: {
                     stdline: (data) => {
                         currentPath = data;
@@ -108,12 +105,12 @@ function executeAction(actionFileFolder) {
                 }
             });
             // Get the full path of the main file of the action to execute
-            const mainFullPath = path_1.default.join(currentPath, actionFileFolder, actionFileObject.runs.main.replace(/^((.\/)|(\/))/, ""));
+            const mainFullPath = path.join(currentPath, actionFileFolder, actionFileObject.runs.main.replace(/^((.\/)|(\/))/, ""));
             // Execute the action
             yield require(mainFullPath);
         }
         catch (err) {
-            core_1.default.error(err);
+            core.error(err);
             throw new Error(`There was an error while trying to execute the action`);
         }
     });
@@ -126,11 +123,11 @@ function deleteFolder(tempFolder) {
         // Cleanup
         if (tempFolder) {
             try {
-                yield io_1.default.rmRF(tempFolder);
+                yield io.rmRF(tempFolder);
             }
             catch (err) {
-                core_1.default.error(err);
-                core_1.default.setFailed(`There was an error while trying to delete temp folder '${tempFolder}'`);
+                core.error(err);
+                core.setFailed(`There was an error while trying to delete temp folder '${tempFolder}'`);
             }
         }
     });
@@ -144,14 +141,14 @@ function runExternalAction(uses) {
         const [repoParts, ref] = uses.split("@");
         // If `ref` is missing, return an error
         if (!ref) {
-            core_1.default.error("ref not found in `uses`");
-            return core_1.default.setFailed(ACTION_ERROR);
+            core.error("ref not found in `uses`");
+            return core.setFailed(ACTION_ERROR);
         }
         // Extract all components from `action` input parameter
         const [org, repo, path] = repoParts.split("/");
         if (!org || !repo) {
-            core_1.default.error("org or repo not found");
-            return core_1.default.setFailed(ACTION_ERROR);
+            core.error("org or repo not found");
+            return core.setFailed(ACTION_ERROR);
         }
         // Create a random folder name where to checkout the action
         const tempFolderName = randomFolderName();
@@ -168,7 +165,7 @@ function runExternalAction(uses) {
             yield executeAction(actionFileFolder);
         }
         catch (err) {
-            core_1.default.setFailed(err);
+            core.setFailed(err);
         }
         finally {
             // Cleanup

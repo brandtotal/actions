@@ -1,5 +1,5 @@
-import core from "@actions/core";
-import { exec } from "@actions/exec";
+import * as core from "@actions/core";
+import * as exec from "@actions/exec";
 
 async function run(): Promise<void> {
   try {
@@ -7,7 +7,7 @@ async function run(): Promise<void> {
     const apiKey = core.getInput("apiKey");
 
     const remoteUrl = `https://heroku:${apiKey}@git.heroku.com/${appName}.git`;
-    await exec(`git`, [`push`, remoteUrl, `HEAD:master`]);
+    await exec.exec(`git`, [`push`, remoteUrl, `HEAD:master`]);
   } catch (error) {
     core.setFailed(error.message);
   }

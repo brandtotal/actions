@@ -1,8 +1,8 @@
-import core from "@actions/core";
+import * as core from "@actions/core";
+import * as fs from "fs-extra";
 import { runExternalAction } from "./external-action";
-import fs from "fs-extra";
 import { setInput } from "./set-input";
-import nv from "@pkgjs/nv";
+const nv = require("@pkgjs/nv");
 
 async function run(): Promise<void> {
   try {
