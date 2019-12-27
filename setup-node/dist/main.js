@@ -19,7 +19,8 @@ function run() {
         try {
             const nvm = (yield fs.readFile(".nvmrc", { encoding: "utf8" })).trim();
             core.info(`Found node ${nvm} in .nvmrc`);
-            const versions = yield nv(nvm);
+            const normalizedNvm = nvm.startsWith("lts") ? nvm.replace("lts/", "") : nvm;
+            const versions = yield nv(normalizedNvm);
             core.info(`Matched with concrete version(s) of: ${JSON.stringify(versions, null, 2)}`);
             if (versions.length === 0) {
                 return core.setFailed(`Didn't match any nvm versions`);

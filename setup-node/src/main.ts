@@ -9,7 +9,8 @@ async function run(): Promise<void> {
     const nvm = (await fs.readFile(".nvmrc", { encoding: "utf8" })).trim();
     core.info(`Found node ${nvm} in .nvmrc`);
 
-    const versions = await nv(nvm);
+    const normalizedNvm = nvm.startsWith("lts") ? nvm.replace("lts/", "") : nvm;
+    const versions = await nv(normalizedNvm);
     core.info(
       `Matched with concrete version(s) of: ${JSON.stringify(
         versions,
