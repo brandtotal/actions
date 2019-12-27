@@ -6,7 +6,7 @@ const nv = require("@pkgjs/nv");
 
 async function run(): Promise<void> {
   try {
-    const nvm = await fs.readFile(".nvmrc", { encoding: "utf8" });
+    const nvm = (await fs.readFile(".nvmrc", { encoding: "utf8" })).trim();
     core.info(`Found node ${nvm} in .nvmrc`);
 
     const versions = await nv(nvm);

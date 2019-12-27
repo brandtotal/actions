@@ -17,7 +17,7 @@ const nv = require("@pkgjs/nv");
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const nvm = yield fs.readFile(".nvmrc", { encoding: "utf8" });
+            const nvm = (yield fs.readFile(".nvmrc", { encoding: "utf8" })).trim();
             core.info(`Found node ${nvm} in .nvmrc`);
             const versions = yield nv(nvm);
             core.info(`Matched with concrete version(s) of: ${JSON.stringify(versions, null, 2)}`);
