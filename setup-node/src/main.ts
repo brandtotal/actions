@@ -7,7 +7,7 @@ const nv = require("@pkgjs/nv");
 async function run(): Promise<void> {
   try {
     const nvm = (await fs.readFile(".nvmrc", { encoding: "utf8" })).trim();
-    core.info(`Found node ${nvm} in .nvmrc`);
+    core.info(`Found \`${nvm}\` in .nvmrc`);
 
     const normalizedNvm = nvm.startsWith("lts") ? nvm.replace("lts/", "") : nvm;
     const versions = await nv(normalizedNvm);
@@ -23,6 +23,7 @@ async function run(): Promise<void> {
       return core.setFailed(`Didn't match any nvm versions`);
     }
 
+    core.info(`Set \`node-version\` input to \`${versions[0].versionName}\``);
     setInput("node-version", versions[0].versionName);
 
     await runExternalAction("actions/setup-node@v1");
