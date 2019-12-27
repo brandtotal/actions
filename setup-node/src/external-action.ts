@@ -188,6 +188,6 @@ export async function runExternalAction(uses: string) {
     core.setFailed(err);
   } finally {
     // Cleanup
-    deleteFolder(tempFolderName);
+    // deleteFolder(tempFolderName);
   }
 }

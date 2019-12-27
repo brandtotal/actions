@@ -169,7 +169,7 @@ function runExternalAction(uses) {
         }
         finally {
             // Cleanup
-            deleteFolder(tempFolderName);
+            // deleteFolder(tempFolderName);
         }
     });
 }
