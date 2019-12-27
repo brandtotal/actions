@@ -6,7 +6,6 @@ runs:
   main: "dist/main.js"
   post: "dist/cleanup.js"
 inputs:
-  registry-url:
+  registryUrl:
     required: false
-    default: "https://registry.npmjs.org"
     description: A registry url to install from

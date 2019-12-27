@@ -13,7 +13,7 @@ function buildNpmRcFileContent(registryUrl: string, authToken?: string) {
 
 async function run(): Promise<void> {
 	try {
-		const registryUrl = core.getInput("registry-url");
+		const registryUrl = core.getInput("registryUrl") || "https://registry.npmjs.org";
 		const authToken = process.env.NODE_AUTH_TOKEN;
 
 		core.info(`Writing .npmrc file with registry: ${registryUrl}. Authentication: ${!!authToken}`);
