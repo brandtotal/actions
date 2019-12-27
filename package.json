@@ -1,0 +1,41 @@
+{
+	"private": true,
+	"workspaces": {
+		"packages": [
+			"actions-lib",
+			"heroku-push",
+			"setup-node"
+		],
+		"nohoist": [
+			"**/*"
+		]
+	},
+	"scripts": {
+		"build": "yarn wsrun build",
+		"test": "jest"
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "yarn build && git add ."
+		}
+	},
+	"devDependencies": {
+		"@types/fs-extra": "^8.0.1",
+		"@types/jest": "^24.0.25",
+		"@types/js-yaml": "^3.12.1",
+		"@types/node": "^12.12.22",
+		"@typescript-eslint/parser": "^2.13.0",
+		"@zeit/ncc": "^0.20.5",
+		"eslint": "^6.8.0",
+		"eslint-plugin-github": "^3.4.0",
+		"eslint-plugin-jest": "^23.1.1",
+		"husky": "^3.1.0",
+		"jest": "^24.9.0",
+		"jest-circus": "^24.9.0",
+		"js-yaml": "^3.13.1",
+		"prettier": "^1.19.1",
+		"ts-jest": "^24.2.0",
+		"typescript": "^3.7.4",
+		"wsrun": "^5.2.0"
+	}
+}
