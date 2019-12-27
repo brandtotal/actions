@@ -5,6 +5,8 @@ runs:
   using: "node12"
   main: "dist/main.js"
   post: "dist/cleanup.js"
+branding:
+  icon: "package"
 inputs:
   registryUrl:
     required: false

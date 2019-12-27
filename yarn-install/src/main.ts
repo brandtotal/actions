@@ -20,8 +20,6 @@ async function run(): Promise<void> {
 
 		await fs.writeFile(".npmrc", buildNpmRcFileContent(registryUrl, authToken));
 
-		core.info("Wrote .npmrc file");
-
 		await ExternalAction.runExternalAction("bahmutov/npm-install@v1.3.0");
 	} catch (error) {
 		core.setFailed(error.message);

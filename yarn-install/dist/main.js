@@ -26,7 +26,6 @@ function run() {
             const authToken = process.env.NODE_AUTH_TOKEN;
             core.info(`Writing .npmrc file with registry: ${registryUrl}. Authentication: ${!!authToken}`);
             yield fs.writeFile(".npmrc", buildNpmRcFileContent(registryUrl, authToken));
-            core.info("Wrote .npmrc file");
             yield actions_lib_1.ExternalAction.runExternalAction("bahmutov/npm-install@v1.3.0");
         }
         catch (error) {
