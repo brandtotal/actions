@@ -1,5 +1,5 @@
 {
-  "name": "@brandtotal/actions-heroku",
+  "name": "@brandtotal/actions_heroku-push",
   "version": "0.0.0",
   "private": true,
   "description": "GitHub actions for interacting with Heroku",
@@ -14,12 +14,18 @@
     "test": "jest",
     "all": "npm run build && npm run format && npm run lint && npm run pack && npm test"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn build && git add ."
+    }
+  },
   "dependencies": {
     "@actions/core": "^1.2.0",
-    "@actions/exec": "^1.0.2"
+    "@actions/exec": "^1.0.2",
+    "husky": "^3.1.0"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.24",
+    "@types/jest": "^24.0.25",
     "@types/node": "^12.12.22",
     "@typescript-eslint/parser": "^2.13.0",
     "@zeit/ncc": "^0.20.5",
