@@ -96,15 +96,15 @@ function executeAction(actionFileFolder) {
             throw new Error(`Unexpected value '${actionFileObject.runs.using}' for 'runs.using' in the 'action.yml' file`);
         }
         try {
-            let currentPath = "";
-            // Get the full path of the current path
-            yield exec.exec("pwd", [], {
-                listeners: {
-                    stdline: (data) => {
-                        currentPath = data;
+            const currentPath = yield new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+                // Get the full path of the current path
+                yield exec.exec("pwd", [], {
+                    listeners: {
+                        stdline: resolve,
+                        stderr: reject,
                     },
-                },
-            });
+                });
+            }));
             // Get the full path of the main file of the action to execute
             const mainFullPath = path.join(currentPath, actionFileFolder, actionFileObject.runs.main.replace(/^((.\/)|(\/))/, ""));
             // Execute the action

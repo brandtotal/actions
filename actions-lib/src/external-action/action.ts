@@ -95,15 +95,14 @@ async function executeAction(actionFileFolder: string) {
 	}
 
 	try {
-		let currentPath = "";
-
-		// Get the full path of the current path
-		await exec.exec("pwd", [], {
-			listeners: {
-				stdline: (data: string) => {
-					currentPath = data;
+		const currentPath = await new Promise<string>(async (resolve, reject) => {
+			// Get the full path of the current path
+			await exec.exec("pwd", [], {
+				listeners: {
+					stdline: resolve,
+					stderr: reject,
 				},
-			},
+			});
 		});
 
 		// Get the full path of the main file of the action to execute
