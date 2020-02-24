@@ -6,7 +6,8 @@
 			"heroku-push",
 			"setup-node",
 			"yarn-install",
-			"create-pull-request"
+			"create-pull-request",
+			"create-branch"
 		],
 		"nohoist": [
 			"**/*"

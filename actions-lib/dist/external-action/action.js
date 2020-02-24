@@ -107,6 +107,7 @@ function executeAction(actionFileFolder) {
             }));
             // Get the full path of the main file of the action to execute
             const mainFullPath = path.join(currentPath, actionFileFolder, actionFileObject.runs.main.replace(/^((.\/)|(\/))/, ""));
+            core.debug(`Going to run ${mainFullPath}`);
             // Execute the action
             yield require(mainFullPath);
         }

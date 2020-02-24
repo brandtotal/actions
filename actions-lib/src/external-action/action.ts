@@ -112,6 +112,8 @@ async function executeAction(actionFileFolder: string) {
 			actionFileObject.runs.main.replace(/^((.\/)|(\/))/, "")
 		);
 
+		core.debug(`Going to run ${mainFullPath}`);
+
 		// Execute the action
 		await require(mainFullPath);
 	} catch (err) {

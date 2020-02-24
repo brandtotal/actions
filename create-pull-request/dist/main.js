@@ -11,24 +11,30 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = require("@actions/core");
 const github = require("@actions/github");
+const DEFAULT_BODY = `✨ This is an automated PR`;
+const DEFAULT_IS_DRAFT = false;
 function run() {
-    var _a, _b, _c, _d;
     return __awaiter(this, void 0, void 0, function* () {
+        core.debug("In create-pull-request action");
         try {
             const base = core.getInput("target", { required: true });
             const head = core.getInput("source", { required: true });
-            const owner = (_a = core.getInput("owner"), (_a !== null && _a !== void 0 ? _a : DEFAULT_OWNER));
-            const repo = github.context.repo.repo;
+            const { owner, repo } = github.context.repo;
             const title = core.getInput("title", { required: true });
-            const body = (_b = core.getInput("body"), (_b !== null && _b !== void 0 ? _b : DEFAULT_BODY));
-            const labels = (_c = core.getInput("labels"), (_c !== null && _c !== void 0 ? _c : "")).split(",").map(label => label.trim());
+            const body = core.getInput("body") || DEFAULT_BODY;
+            const labels = (core.getInput("labels") || "").split(",").map(label => label.trim());
             const octokit = new github.GitHub(core.getInput("token", { required: true }));
-            const { data: existingPullRequests } = yield octokit.pulls.list({ base, head, owner, repo });
+            const { data: existingPullRequests } = yield octokit.pulls.list({
+                base,
+                head,
+                owner,
+                repo,
+            });
             const { data: pullRequest } = existingPullRequests.length === 0
                 ? yield octokit.pulls.create({
                     title,
                     body,
-                    draft: JSON.parse((_d = core.getInput("draft"), (_d !== null && _d !== void 0 ? _d : JSON.stringify(DEFAULT_IS_DRAFT)))),
+                    draft: JSON.parse(core.getInput("draft") || JSON.stringify(DEFAULT_IS_DRAFT)),
                     base,
                     head,
                     owner,
@@ -51,12 +57,10 @@ function run() {
             }
         }
         catch (error) {
+            core.error(`Caught error: ${JSON.stringify(error, null, 2)}`);
             core.setFailed(error.message);
         }
     });
 }
 run();
-const DEFAULT_BODY = `✨ This is an automated PR`;
-const DEFAULT_IS_DRAFT = false;
-const DEFAULT_OWNER = "GitHub Action Bot";
 //# sourceMappingURL=main.js.map

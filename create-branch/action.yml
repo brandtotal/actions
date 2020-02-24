@@ -1,0 +1,19 @@
+name: "Create branch"
+description: "Create branch"
+author: "Ben Grynhaus <ben@brandtotal.com>"
+inputs:
+  token:
+    description: "the GitHub token"
+    required: true
+  name:
+    description: "the branch name"
+    required: true
+  base:
+    description: "the branch to start the branch from"
+    required: true
+runs:
+  using: "node12"
+  main: "dist/main.js"
+branding:
+  icon: git-pull-request
+  color: gray-dark

@@ -1,5 +1,5 @@
 module.exports = {
-	displayName: "heroku-push",
+	displayName: "create-pull-request",
 	clearMocks: true,
 	preset: "ts-jest",
 	testEnvironment: "node",
