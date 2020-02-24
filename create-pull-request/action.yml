@@ -1,0 +1,34 @@
+name: "Create pull request"
+description: "Create pull request"
+author: "Ben Grynhaus <ben@brandtotal.com>"
+inputs:
+  token:
+    description: "the GitHub token"
+    required: true
+  target:
+    description: "the GitHub Pull Request target"
+    required: true
+  source:
+    description: "the GitHub Pull Request source"
+    required: true
+  owner:
+    description: "the GitHub Pull Request owner"
+    required: false
+  title:
+    description: "the GitHub Pull Request title"
+    required: true
+  body:
+    description: "the GitHub Pull Request body"
+    required: false
+  labels:
+    description: "the GitHub Pull Request labels"
+    required: false
+  draft:
+    description: "the GitHub Pull Request draft"
+    required: false
+runs:
+  using: "node12"
+  main: "dist/main.js"
+branding:
+  icon: git-pull-request
+  color: gray-dark
