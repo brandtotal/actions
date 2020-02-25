@@ -26,6 +26,9 @@ inputs:
   draft:
     description: "is the GitHub Pull Request a draft. If creating it"
     required: false
+  milestone:
+    description: "a milestone number to associate the pull request with"
+    required: false
 runs:
   using: "node12"
   main: "dist/main.js"

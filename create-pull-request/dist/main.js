@@ -23,6 +23,7 @@ function run() {
             const title = core.getInput("title", { required: true });
             const body = core.getInput("body") || DEFAULT_BODY;
             const labels = (core.getInput("labels") || "").split(",").map(label => label.trim());
+            const milestone = core.getInput("milestone");
             const octokit = new github.GitHub(core.getInput("token", { required: true }));
             const { data: existingPullRequests } = yield octokit.pulls.list({
                 base,
@@ -53,6 +54,14 @@ function run() {
                     owner,
                     repo,
                     labels,
+                });
+            }
+            if (milestone) {
+                yield octokit.issues.update({
+                    issue_number: pullRequest.number,
+                    milestone: parseInt(milestone, 10),
+                    owner,
+                    repo,
                 });
             }
         }
