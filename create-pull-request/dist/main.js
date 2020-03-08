@@ -27,7 +27,7 @@ function run() {
             const octokit = new github.GitHub(core.getInput("token", { required: true }));
             const { data: existingPullRequests } = yield octokit.pulls.list({
                 base,
-                head,
+                head: `${owner}/${head}`,
                 owner,
                 repo,
             });

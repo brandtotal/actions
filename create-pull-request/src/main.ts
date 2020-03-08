@@ -20,7 +20,7 @@ async function run(): Promise<void> {
 
 		const { data: existingPullRequests } = await octokit.pulls.list({
 			base,
-			head,
+			head: `${owner}/${head}`,
 			owner,
 			repo,
 		});
