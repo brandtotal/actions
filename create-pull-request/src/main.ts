@@ -20,13 +20,16 @@ async function run(): Promise<void> {
 
 		const { data: existingPullRequests } = await octokit.pulls.list({
 			base,
-			head: `${owner}/${head}`,
+			head: `${owner}:${head}`,
 			owner,
 			repo,
+			state: "open",
 		});
 
+		const existingPullRequestsToUpdate = existingPullRequests.filter(pr => pr.draft === false);
+
 		const { data: pullRequest } =
-			existingPullRequests.length === 0
+			existingPullRequestsToUpdate.length === 0
 				? await octokit.pulls.create({
 						title,
 						body,
@@ -37,7 +40,7 @@ async function run(): Promise<void> {
 						repo,
 				  })
 				: await octokit.pulls.update({
-						pull_number: existingPullRequests[0].number,
+						pull_number: existingPullRequestsToUpdate[0].number,
 						title,
 						body,
 						owner,

@@ -27,11 +27,13 @@ function run() {
             const octokit = new github.GitHub(core.getInput("token", { required: true }));
             const { data: existingPullRequests } = yield octokit.pulls.list({
                 base,
-                head: `${owner}/${head}`,
+                head: `${owner}:${head}`,
                 owner,
                 repo,
+                state: "open",
             });
-            const { data: pullRequest } = existingPullRequests.length === 0
+            const existingPullRequestsToUpdate = existingPullRequests.filter(pr => pr.draft === false);
+            const { data: pullRequest } = existingPullRequestsToUpdate.length === 0
                 ? yield octokit.pulls.create({
                     title,
                     body,
@@ -42,7 +44,7 @@ function run() {
                     repo,
                 })
                 : yield octokit.pulls.update({
-                    pull_number: existingPullRequests[0].number,
+                    pull_number: existingPullRequestsToUpdate[0].number,
                     title,
                     body,
                     owner,
