@@ -28,24 +28,32 @@ async function run(): Promise<void> {
 
 		const existingPullRequestsToUpdate = existingPullRequests.filter(pr => pr.draft === false);
 
-		const { data: pullRequest } =
-			existingPullRequestsToUpdate.length === 0
-				? await octokit.pulls.create({
-						title,
-						body,
-						draft: JSON.parse(core.getInput("draft") || JSON.stringify(DEFAULT_IS_DRAFT)),
-						base,
-						head,
-						owner,
-						repo,
-				  })
-				: await octokit.pulls.update({
-						pull_number: existingPullRequestsToUpdate[0].number,
-						title,
-						body,
-						owner,
-						repo,
-				  });
+		const hasExistingPullRequestToUpdate = existingPullRequestsToUpdate.length !== 0;
+		core.info(
+			`Found existing pull request?: ${hasExistingPullRequestToUpdate}. ${
+				hasExistingPullRequestToUpdate ? existingPullRequestsToUpdate[0].number : ""
+			}`
+		);
+
+		core.info(`Variables: ${JSON.stringify({ head, base })}`);
+
+		const { data: pullRequest } = !hasExistingPullRequestToUpdate
+			? await octokit.pulls.create({
+					title,
+					body,
+					draft: JSON.parse(core.getInput("draft") || JSON.stringify(DEFAULT_IS_DRAFT)),
+					base,
+					head,
+					owner,
+					repo,
+			  })
+			: await octokit.pulls.update({
+					pull_number: existingPullRequestsToUpdate[0].number,
+					title,
+					body,
+					owner,
+					repo,
+			  });
 
 		if (labels.length > 0) {
 			await octokit.issues.addLabels({

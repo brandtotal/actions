@@ -33,7 +33,10 @@ function run() {
                 state: "open",
             });
             const existingPullRequestsToUpdate = existingPullRequests.filter(pr => pr.draft === false);
-            const { data: pullRequest } = existingPullRequestsToUpdate.length === 0
+            const hasExistingPullRequestToUpdate = existingPullRequestsToUpdate.length !== 0;
+            core.info(`Found existing pull request?: ${hasExistingPullRequestToUpdate}. ${hasExistingPullRequestToUpdate ? existingPullRequestsToUpdate[0].number : ""}`);
+            core.info(`Variables: ${JSON.stringify({ head, base })}`);
+            const { data: pullRequest } = !hasExistingPullRequestToUpdate
                 ? yield octokit.pulls.create({
                     title,
                     body,
