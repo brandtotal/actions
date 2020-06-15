@@ -1,9 +1,9 @@
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
-import * as path from "path";
 import * as yaml from "js-yaml";
-import { STATE_PATHS_TO_DELETE } from "./consts";
+import * as path from "path";
 import { setInput } from "../utils/set-input";
+import { STATE_PATHS_TO_DELETE } from "./consts";
 
 // Default error message describing the `action` input parameter format
 const ACTION_ERROR = `Provided 'action' is not valid, it must have the following format: '{org}/{repo}[/path]@ref'`;
@@ -20,9 +20,15 @@ interface ActionFileContent {
  * Generates a random string to be used as temporary folder to clone the action repo
  */
 function randomFolderName() {
-	return Math.random()
+	const dirName = Math.random()
 		.toString(36)
 		.substring(2, 15);
+
+	if (process.env.RUNNER_TEMP) {
+		return path.join(process.env.RUNNER_TEMP, dirName);
+	}
+
+	return dirName;
 }
 
 /**
@@ -95,24 +101,10 @@ async function executeAction(actionFileFolder: string) {
 	}
 
 	try {
-		const currentPath = await new Promise<string>(async (resolve, reject) => {
-			// Get the full path of the current path
-			await exec.exec("pwd", [], {
-				listeners: {
-					stdline: resolve,
-					stderr: reject,
-				},
-			});
-		});
-
 		// Get the full path of the main file of the action to execute
-		const mainFullPath = path.join(
-			currentPath,
-			actionFileFolder,
-			actionFileObject.runs.main.replace(/^((.\/)|(\/))/, "")
-		);
+		const mainFullPath = path.join(actionFileFolder, actionFileObject.runs.main.replace(/^((.\/)|(\/))/, ""));
 
-		core.debug(`Going to run ${mainFullPath}`);
+		core.info(`DEBUG: Going to run ${mainFullPath}`);
 
 		// Execute the action
 		await require(mainFullPath);

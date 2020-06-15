@@ -11,19 +11,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = require("@actions/core");
 const exec = require("@actions/exec");
-const path = require("path");
 const yaml = require("js-yaml");
-const consts_1 = require("./consts");
+const path = require("path");
 const set_input_1 = require("../utils/set-input");
+const consts_1 = require("./consts");
 // Default error message describing the `action` input parameter format
 const ACTION_ERROR = `Provided 'action' is not valid, it must have the following format: '{org}/{repo}[/path]@ref'`;
 /**
  * Generates a random string to be used as temporary folder to clone the action repo
  */
 function randomFolderName() {
-    return Math.random()
+    const dirName = Math.random()
         .toString(36)
         .substring(2, 15);
+    if (process.env.RUNNER_TEMP) {
+        return path.join(process.env.RUNNER_TEMP, dirName);
+    }
+    return dirName;
 }
 /**
  * Clones the action repository
@@ -96,18 +100,9 @@ function executeAction(actionFileFolder) {
             throw new Error(`Unexpected value '${actionFileObject.runs.using}' for 'runs.using' in the 'action.yml' file`);
         }
         try {
-            const currentPath = yield new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
-                // Get the full path of the current path
-                yield exec.exec("pwd", [], {
-                    listeners: {
-                        stdline: resolve,
-                        stderr: reject,
-                    },
-                });
-            }));
             // Get the full path of the main file of the action to execute
-            const mainFullPath = path.join(currentPath, actionFileFolder, actionFileObject.runs.main.replace(/^((.\/)|(\/))/, ""));
-            core.debug(`Going to run ${mainFullPath}`);
+            const mainFullPath = path.join(actionFileFolder, actionFileObject.runs.main.replace(/^((.\/)|(\/))/, ""));
+            core.info(`DEBUG: Going to run ${mainFullPath}`);
             // Execute the action
             yield require(mainFullPath);
         }

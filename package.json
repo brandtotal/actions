@@ -14,7 +14,7 @@
 		]
 	},
 	"scripts": {
-		"build": "yarn wsrun build",
+		"build": "yarn workspace @brandtotal/actions_lib build && yarn wsrun build",
 		"test": "jest --passWithNoTests",
 		"yarn-deduplicate": "yarn-deduplicate yarn.lock -s fewer && yarn"
 	},
